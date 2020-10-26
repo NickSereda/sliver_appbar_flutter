@@ -13,28 +13,29 @@ class SearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.topRight,
-      children: [
+    return
+      // Stack(
+      // alignment: Alignment.topRight,
+      // children: [
 
         // AnimateExpansion(
-        //   animate: !isSearching,
-        //   axisAlignment: 1.0,
-        //   child: Text('Dynamic AppBar Test'),
-        // ),
+        //         //   animate: !isSearching,
+        //         //   axisAlignment: 1.0,
+        //         //   child: Text('Dynamic AppBar Test'),
+        //         // ),
 
-        Align(
-          alignment: Alignment.topRight,
-          child: Container(
-                  child: IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: (){
-                            Provider.of<SearchBarData>(context, listen: false)
-                                .toggleSelected();
-                    },
-                  ),
-              ),
-        ),
+        // Align(
+        //   alignment: Alignment.topRight,
+        //   child: Container(
+        //           child: IconButton(
+        //             icon: Icon(Icons.search),
+        //             onPressed: (){
+        //                     Provider.of<SearchBarData>(context, listen: false)
+        //                         .toggleSelected();
+        //             },
+        //           ),
+        //       ),
+        // ),
 
         ///This Alignment ensures TextField slides from right and not from center
         Align(
@@ -43,16 +44,17 @@ class SearchBar extends StatelessWidget {
             animate: isSearching,
             axisAlignment: -1.0,
             child: Container(
-              ///same height as AppBar
+              ///same height as AppBar - 80
               height: 80,
                 width: MediaQuery.of(context).size.width,
                 ///positioning seachBar in the center
-                child: Center(child: Search())),
+                // child: Center(child: Search())),
+                child: Search()),
           ),
-        ),
+        );
 
-      ],
-    );
+    //   ],
+    // );
   }
 }
 //TODO: Work on Design of the SearchBar

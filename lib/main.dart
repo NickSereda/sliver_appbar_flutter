@@ -121,27 +121,27 @@ class CustomSliverDelegate extends SliverPersistentHeaderDelegate {
               actions: [
                 //
 
-                //   Visibility(
-                //     visible: !Provider.of<SearchBarData>(context, listen: true).isSelected,
-                //     child: IconButton(
-                //       icon: Icon(Icons.fact_check),
-                //       onPressed: () {
-                //
-                //       },
-                //       tooltip: 'Search',
-                //     ),
-                //   ),
-                //   Visibility(
-                //     visible: !Provider.of<SearchBarData>(context, listen: true).isSelected,
-                //     child: IconButton(
-                //       icon: Icon(Icons.handyman_sharp),
-                //       onPressed: () {
-                //
-                //       },
-                //       tooltip: 'Search',
-                //     ),
-                //   ),
-                //
+                  Visibility(
+                    visible: !Provider.of<SearchBarData>(context, listen: true).isSelected,
+                    child: IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: (){
+                        Provider.of<SearchBarData>(context, listen: false)
+                            .toggleSelected();
+                      },
+                    ),
+                  ),
+                  Visibility(
+                    visible: !Provider.of<SearchBarData>(context, listen: true).isSelected,
+                    child: IconButton(
+                      icon: Icon(Icons.handyman_sharp),
+                      onPressed: () {
+
+                      },
+                      tooltip: 'Search',
+                    ),
+                  ),
+
               ],
               //TODO: Find out about Purpose of currentExtent?
               flexibleSpace: !Provider.of<SearchBarData>(context, listen: true).isSelected ? FlexibleSpaceBar.createSettings(currentExtent: 50, child:
@@ -170,23 +170,12 @@ class CustomSliverDelegate extends SliverPersistentHeaderDelegate {
     }
 
 
-  // @override
-  // double get maxExtent =>  ;
-  //
-  // @override
-  // double get minExtent => kToolbarHeight;
-  //
-  // @override
-  // bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-  //   return true;
-  // }
-
   //These overrides are required
   @override
-  double get maxExtent => 250;
+  double get maxExtent => 200;
 
   @override
-  double get minExtent => 80; ///kToolbarHeight == 56.0
+  double get minExtent => 60; ///kToolbarHeight == 56.0
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
