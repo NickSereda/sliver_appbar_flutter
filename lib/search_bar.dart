@@ -14,7 +14,7 @@ class SearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      alignment: Alignment.center,
+      alignment: Alignment.topRight,
       children: [
 
         // AnimateExpansion(
@@ -22,8 +22,6 @@ class SearchBar extends StatelessWidget {
         //   axisAlignment: 1.0,
         //   child: Text('Dynamic AppBar Test'),
         // ),
-
-
 
         Align(
           alignment: Alignment.topRight,
@@ -45,9 +43,9 @@ class SearchBar extends StatelessWidget {
             animate: isSearching,
             axisAlignment: -1.0,
             child: Container(
-              ///10 points less than AppBar
-              height: 70,
-               width: MediaQuery.of(context).size.width,
+              ///same height as AppBar
+              height: 80,
+                width: MediaQuery.of(context).size.width,
                 ///positioning seachBar in the center
                 child: Center(child: Search())),
           ),
@@ -65,8 +63,8 @@ class Search extends StatelessWidget {
       autofocus: true,
       decoration:
       InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
+         filled: true,
+         fillColor: Colors.white,
         hintText: "Search", hintStyle: TextStyle(color: Colors.black26),
         prefixIcon: IconButton(icon: Icon(Icons.arrow_back_ios, color: Colors.blue),onPressed: () {
           Provider.of<SearchBarData>(context, listen: false)
@@ -80,32 +78,15 @@ class Search extends StatelessWidget {
 
         border: OutlineInputBorder(
 
-          borderRadius: BorderRadius.all(
-            Radius.circular(20.0),
-          ),
-        //  borderSide: BorderSide.none,
+          // borderRadius: BorderRadius.all(
+          //   Radius.circular(20.0),
+          // ),
+
+          borderSide: BorderSide.none,
 
         ),
 
       ),
-      // InputDecoration(
-      //
-      //   filled: true,
-      //   fillColor: Colors.white,
-      //
-      //   border: OutlineInputBorder(
-      //     borderRadius: BorderRadius.all(Radius.circular(10)),
-      //     borderSide: BorderSide.none,
-      //   ),
-      //
-      //   hintText: 'Search...',
-      //   hintStyle: TextStyle(
-      //     fontSize: 20,
-      //     color: Colors.white.withOpacity(.4),
-      //   ),
-      // ),
-
-
     );
   }
 }

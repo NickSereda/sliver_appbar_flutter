@@ -96,71 +96,75 @@ class CustomSliverDelegate extends SliverPersistentHeaderDelegate {
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
 
    final appBarHeight = Provider.of<SearchBarData>(context, listen: true).appBarHeight;
-   
+
 //TODO: appBar height should be a little bigger then searchbar height
+    ///
       return Container(
 
         height: appBarHeight,
 
-        child: AppBar(
+        child: Stack(
+          children: [
 
-          leading: !Provider.of<SearchBarData>(context, listen: true).isSelected ? FlutterLogo() : Container(),
+            AppBar(
 
-          /// Searchbar functionality is implemeted in title
-          title: Center(
+              leading: FlutterLogo(),
 
-             child: SearchBar(
-          isSearching:
-          Provider.of<SearchBarData>(context, listen: true).isSelected,
-        )
+              /// Searchbar functionality is implemeted in title
+              // title: Center(
+              //     child: SearchBar(
+              //       isSearching:
+              //       Provider.of<SearchBarData>(context, listen: true).isSelected,
+              //     )
+              // ),
+
+              actions: [
+                //
+
+                //   Visibility(
+                //     visible: !Provider.of<SearchBarData>(context, listen: true).isSelected,
+                //     child: IconButton(
+                //       icon: Icon(Icons.fact_check),
+                //       onPressed: () {
+                //
+                //       },
+                //       tooltip: 'Search',
+                //     ),
+                //   ),
+                //   Visibility(
+                //     visible: !Provider.of<SearchBarData>(context, listen: true).isSelected,
+                //     child: IconButton(
+                //       icon: Icon(Icons.handyman_sharp),
+                //       onPressed: () {
+                //
+                //       },
+                //       tooltip: 'Search',
+                //     ),
+                //   ),
+                //
+              ],
+              //TODO: Find out about Purpose of currentExtent?
+              flexibleSpace: !Provider.of<SearchBarData>(context, listen: true).isSelected ? FlexibleSpaceBar.createSettings(currentExtent: 50, child:
+
+              FlexibleSpaceBar(
+
+                title: Text('FlexibleSpace'),
 
 
-        ),
-          actions: [
-          //
-          // Visibility(
-          //   visible: !Provider.of<SearchBarData>(context, listen: true).isSelected,
-          //   child: IconButton(
-          //       icon: Icon(Icons.cake),
-          //       onPressed: () {
-          //
-          //       },
-          //       tooltip: 'Search',
-          //     ),
-          // ),
-          //   Visibility(
-          //     visible: !Provider.of<SearchBarData>(context, listen: true).isSelected,
-          //     child: IconButton(
-          //       icon: Icon(Icons.fact_check),
-          //       onPressed: () {
-          //
-          //       },
-          //       tooltip: 'Search',
-          //     ),
-          //   ),
-          //   Visibility(
-          //     visible: !Provider.of<SearchBarData>(context, listen: true).isSelected,
-          //     child: IconButton(
-          //       icon: Icon(Icons.handyman_sharp),
-          //       onPressed: () {
-          //
-          //       },
-          //       tooltip: 'Search',
-          //     ),
-          //   ),
-          //
+              ),
+
+              ): Container(),
+            ),
+
+            Center(
+                child: SearchBar(
+                  isSearching:
+                  Provider.of<SearchBarData>(context, listen: true).isSelected,
+                )
+            ),
+
           ],
-          //TODO: Find out about Purpose of currentExtent?
-          flexibleSpace: !Provider.of<SearchBarData>(context, listen: true).isSelected ? FlexibleSpaceBar.createSettings(currentExtent: 50, child:
 
-          FlexibleSpaceBar(
-
-            title: Text('FlexibleSpace'),
-
-
-          ),
-
-          ): Container(),
         ),
       );
     }
