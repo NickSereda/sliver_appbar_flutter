@@ -116,14 +116,14 @@ class _AnimateExpansionState extends State<AnimateExpansion>
   void prepareAnimations() {
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300),
+      duration: Duration(milliseconds: 280),
     );
     _animation = CurvedAnimation(
       parent: _animationController,
-      // curve: Curves.linear,
-      // reverseCurve: Curves.easeOut,
-      curve: Curves.easeInCubic,
-      reverseCurve: Curves.easeOutCubic,
+      curve: Curves.ease,
+      reverseCurve: Curves.ease,
+     //  curve: Curves.easeInCubic,
+      // reverseCurve: Curves.easeOutCubic,
     );
   }
 

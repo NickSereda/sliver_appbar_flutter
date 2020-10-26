@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 //TODO: Change to Bloc pattern?
 
 class SearchBarData extends ChangeNotifier {
-  
+
   double get appBarHeight {
 
     //TODO: Replace hardcoded values with variables

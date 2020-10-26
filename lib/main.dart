@@ -44,8 +44,10 @@ class _CustomScrollViewWithSliverAppBarState
       child: Scaffold(
         body: Stack(
           children: [
+            //TODO: FIX height of this Container
             ///Top color of SafeArea is Blue
-            Container(height: 50,
+            Container(
+              height: 45,
             color: Colors.blue,),
             ///SafeArea ensures that SearchBar is in the safe area
             SafeArea(
