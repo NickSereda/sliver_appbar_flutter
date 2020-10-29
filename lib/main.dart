@@ -1,12 +1,10 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-
+import 'package:sliver_appbar_flutter/post_model.dart';
 import 'package:sliver_appbar_flutter/search_bar.dart';
-
 import 'package:provider/provider.dart';
 import 'package:sliver_appbar_flutter/search_bar_provider_data.dart';
-import 'package:sliver_appbar_flutter/sprung_search_bar.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -37,22 +35,24 @@ class _CustomScrollViewWithSliverAppBarState
 
   @override
   Widget build(BuildContext context) {
+
     return ChangeNotifierProvider(
       create: (BuildContext context) {
         return SearchBarData();
       },
       child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
         body: Stack(
           children: [
             //TODO: FIX height of this Container
             ///Top color of SafeArea is Blue
             Container(
               height: 45,
-            color: Colors.blue,),
+            ///same as AppBar color
+            color: Theme.of(context).colorScheme.primary),
             ///SafeArea ensures that SearchBar is in the safe area
             SafeArea(
               child: CustomScrollView(
-
               slivers: [
                 ///SliverPersistentHeader allows us to regulate expandedHeight dynamically with CustomSliverDelegate
                 SliverPersistentHeader(
@@ -62,6 +62,24 @@ class _CustomScrollViewWithSliverAppBarState
                   floating: false,
                   delegate: CustomSliverDelegate(
 
+                     actions: [
+                          IconButton(
+                           icon: Icon(Icons.handyman_sharp),
+                           onPressed: () {
+
+                           },
+                           tooltip: 'Settings',
+                         ),
+
+                     ],
+                    title: Text("Title"),
+                    flexibleSpace: FlexibleSpaceBar.createSettings(currentExtent: 50, child:
+                    FlexibleSpaceBar(
+                      title: Text('FlexibleSpace'),
+                    ),
+                    ),
+                     leading: FlutterLogo(),
+                    //
                     // scaffoldKey: widget.scaffoldKey,
                   ),
                 ),
@@ -69,11 +87,10 @@ class _CustomScrollViewWithSliverAppBarState
                 ///Body of the screen
                 SliverFillRemaining(
                   //TODO: Add list of Items that uses searches for here
-                  child: Center(
-                    child: Container(
-                      color: Colors.white24,
-                    ),
-                  ),
+                  child: Container(
+                    child: Text("TEST"),
+                    color: Theme.of(context).colorScheme.background,
+                  )
                 )
               ],
           ),
@@ -86,98 +103,105 @@ class _CustomScrollViewWithSliverAppBarState
 }
 
 
+typedef SearchCallback = void Function(String query);
+
 class CustomSliverDelegate extends SliverPersistentHeaderDelegate {
 
+  final List<Widget> actions;
 
-  //TODO: Implement and add this method to SearchBarData
-  void handleClick(String value, BuildContext context) {
+  final Widget title;
 
+  final Widget leading;
+
+  final Widget flexibleSpace;
+
+  SearchCallback onQueryCallback;
+
+bool _IsExpanded = false;
+
+///So that we add searchbar only once
+bool _IsSearchBarAdded = false;
+
+CustomSliverDelegate({this.actions, this.title, this.leading, this.flexibleSpace, this.onQueryCallback});
+
+
+@override
+Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+
+  ///adding searchbar to actions
+  if (!_IsSearchBarAdded) {
+    actions.add(Visibility(
+      visible: !Provider.of<SearchBarData>(context, listen: true).isSelected,
+      child: IconButton(
+        icon: Icon(Icons.search),
+        onPressed: (){
+          Provider.of<SearchBarData>(context, listen: false)
+              .toggleSelected();
+
+          ///TEST SearchCallback here
+
+
+        },
+      ),
+    ),);
   }
 
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  _IsSearchBarAdded = true;
+  ///for toggling maxExtend
+  _IsExpanded = Provider.of<SearchBarData>(context, listen: true).isSelected;
 
-   final appBarHeight = Provider.of<SearchBarData>(context, listen: true).appBarHeight;
-
-//TODO: appBar height should be a little bigger then searchbar height
-    ///
-      return Container(
-
-        height: appBarHeight,
-
+        return Container(
         child: Stack(
-          children: [
+        children: [
+          AppBar(
+            leading: FlutterLogo(),
+            /// Searchbar functionality is implemeted on top of AppBar
+            title: title,
+            actions: actions,
+            flexibleSpace: !Provider.of<SearchBarData>(context, listen: true).isSelected ? flexibleSpace : Container(),
 
-            AppBar(
+          ),
 
-              leading: FlutterLogo(),
-
-              /// Searchbar functionality is implemeted in title
-              // title: Center(
-              //     child: SearchBar(
-              //       isSearching:
-              //       Provider.of<SearchBarData>(context, listen: true).isSelected,
-              //     )
-              // ),
-
-              actions: [
-                //
-
-                  Visibility(
-                    visible: !Provider.of<SearchBarData>(context, listen: true).isSelected,
-                    child: IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: (){
-                        Provider.of<SearchBarData>(context, listen: false)
-                            .toggleSelected();
-                      },
-                    ),
-                  ),
-                  Visibility(
-                    visible: !Provider.of<SearchBarData>(context, listen: true).isSelected,
-                    child: IconButton(
-                      icon: Icon(Icons.handyman_sharp),
-                      onPressed: () {
-
-                      },
-                      tooltip: 'Search',
-                    ),
-                  ),
-
-              ],
-              //TODO: Find out about Purpose of currentExtent?
-              flexibleSpace: !Provider.of<SearchBarData>(context, listen: true).isSelected ? FlexibleSpaceBar.createSettings(currentExtent: 50, child:
-
-              FlexibleSpaceBar(
-
-                title: Text('FlexibleSpace'),
+          Center(
+              child: SearchBar(
+                isSearching: Provider.of<SearchBarData>(context, listen: true).isSelected,
+               // onQueryChanged : onQueryCallback,
 
 
-              ),
+                onSearchPressed: () {
+                  print("Search Icon Pressed");
+              },
 
-              ): Container(),
-            ),
+                onEditingComplete: () {
+                  print("Editing Complete");
+                },
 
-            Center(
-                child: SearchBar(
-                  isSearching:
-                  Provider.of<SearchBarData>(context, listen: true).isSelected,
-                )
-            ),
+                onQueryChanged: (String query) {
+                print("QUERY: $query");
+              },
 
-          ],
-
+              )
+          ),
+        ],
         ),
       );
-    }
 
+}
 
   //These overrides are required
   @override
-  double get maxExtent => 200;
+  double get maxExtent {
+
+  if (!_IsExpanded) {
+    return 200;
+  } else {
+    return 60;
+  }
+
+  } // 200
 
   @override
-  double get minExtent => 60; ///kToolbarHeight == 56.0
+  double get minExtent => 60; /// 60 same as SearchBar height
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
@@ -185,4 +209,6 @@ class CustomSliverDelegate extends SliverPersistentHeaderDelegate {
   }
 
 }
+
+
 

@@ -1,99 +1,124 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
+import 'package:sliver_appbar_flutter/main.dart';
+import 'package:sliver_appbar_flutter/post_model.dart';
 import 'package:sliver_appbar_flutter/search_bar_provider_data.dart';
 
-//TODO: Desing of the SearchBar
-//TODO: Implement Animation and Hide SearchButton(Maybe in CustomSliverDelegate itself)
+
 class SearchBar extends StatelessWidget {
 
   final bool isSearching;
 
-  SearchBar({@required this.isSearching});
+  final SearchCallback onQueryChanged;
+
+  final Function onEditingComplete;
+
+  final Function onSearchPressed;
+
+  SearchBar({@required this.isSearching, @required this.onQueryChanged, @required this.onSearchPressed, @required this.onEditingComplete});
 
   @override
   Widget build(BuildContext context) {
-    return
-      // Stack(
-      // alignment: Alignment.topRight,
-      // children: [
-
-        // AnimateExpansion(
-        //         //   animate: !isSearching,
-        //         //   axisAlignment: 1.0,
-        //         //   child: Text('Dynamic AppBar Test'),
-        //         // ),
-
-        // Align(
-        //   alignment: Alignment.topRight,
-        //   child: Container(
-        //           child: IconButton(
-        //             icon: Icon(Icons.search),
-        //             onPressed: (){
-        //                     Provider.of<SearchBarData>(context, listen: false)
-        //                         .toggleSelected();
-        //             },
-        //           ),
-        //       ),
-        // ),
-
         ///This Alignment ensures TextField slides from right and not from center
-        Align(
+       return Align(
           alignment: Alignment.topRight,
           child: AnimateExpansion(
             animate: isSearching,
             axisAlignment: -1.0,
             child: Container(
-              ///same height as AppBar - 80
+              ///same height as AppBar
               height: 80,
                 width: MediaQuery.of(context).size.width,
                 ///positioning seachBar in the center
                 // child: Center(child: Search())),
-                child: Search()),
+                child: Search(onQueryChanged: onQueryChanged, onEditingComplete: onEditingComplete, onSearchPressed: onSearchPressed)),
           ),
         );
 
-    //   ],
-    // );
   }
 }
 //TODO: Work on Design of the SearchBar
-class Search extends StatelessWidget {
+class Search extends StatefulWidget {
+
+  SearchCallback onQueryChanged;
+
+  final Function onEditingComplete;
+
+  final Function onSearchPressed;
+
+  Search({@required this.onQueryChanged, @required this.onEditingComplete, @required this.onSearchPressed});
+
+  @override
+  _SearchState createState() => _SearchState();
+}
+
+class _SearchState extends State<Search>  {
+
+  final TextEditingController _controller = TextEditingController();
+
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _controller.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return TextField(
+      controller: _controller,
       autofocus: true,
+
+      onChanged: widget.onQueryChanged,
+
+      onEditingComplete: () {
+
+        _controller.clear();
+        Provider.of<SearchBarData>(context, listen: false).toggleSelected();
+
+      },
+
       decoration:
       InputDecoration(
          filled: true,
          fillColor: Colors.white,
         hintText: "Search", hintStyle: TextStyle(color: Colors.black26),
-        prefixIcon: IconButton(icon: Icon(Icons.arrow_back_ios, color: Colors.blue),onPressed: () {
-          Provider.of<SearchBarData>(context, listen: false)
-                        .toggleSelected();
-        },),
+        prefixIcon: IconButton(icon: Icon(Icons.arrow_back_ios, color: Colors.blue),
 
-        suffixIcon: IconButton(icon: Icon(Icons.search, color: Colors.blue),onPressed: () {
+          onPressed: () {
+          Provider.of<SearchBarData>(context, listen: false).toggleSelected();
+        },
+
+        ),
+
+        suffixIcon: IconButton(icon: Icon(Icons.search, color: Colors.blue),
+
+          onPressed: () {
+
+          _controller.clear();
+
           Provider.of<SearchBarData>(context, listen: false)
               .toggleSelected();
-         },),
+
+         },
+
+        ),
 
         border: OutlineInputBorder(
-
-          // borderRadius: BorderRadius.all(
-          //   Radius.circular(20.0),
-          // ),
 
           borderSide: BorderSide.none,
 
         ),
-
       ),
     );
   }
 }
 
-//TODO: Change Animation
+
+///Animation
 class AnimateExpansion extends StatefulWidget {
   final Widget child;
   final bool animate;
@@ -110,23 +135,34 @@ class AnimateExpansion extends StatefulWidget {
 
 class _AnimateExpansionState extends State<AnimateExpansion>
     with SingleTickerProviderStateMixin {
+
   AnimationController _animationController;
+
+///Animation object allows us to pick CurvedAnimation behaviour
   Animation<double> _animation;
 
   void prepareAnimations() {
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 280),
+      duration: Duration(milliseconds: 400),
     );
     _animation = CurvedAnimation(
+      ///parent is AnimationController
       parent: _animationController,
+
+      ///Choose CurvedAnimation behaviour here
+      // curve: Curves.elasticOut,
+      // reverseCurve: Curves.elasticOut,
+
       curve: Curves.ease,
       reverseCurve: Curves.ease,
+
      //  curve: Curves.easeInCubic,
       // reverseCurve: Curves.easeOutCubic,
     );
   }
 
+  ///appear and hide when this method is called(in didUpdateWidget)
   void _toggle() {
     if (widget.animate) {
       _animationController.forward();
@@ -148,9 +184,11 @@ class _AnimateExpansionState extends State<AnimateExpansion>
     _toggle();
   }
 
+  ///Transition
   @override
   Widget build(BuildContext context) {
     return SizeTransition(
+       // axis: Axis.vertical,
         axis: Axis.horizontal,
         axisAlignment: -1.0,
         sizeFactor: _animation,
