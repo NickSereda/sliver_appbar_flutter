@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
 import 'package:sliver_appbar_flutter/main.dart';
-import 'package:sliver_appbar_flutter/post_model.dart';
 import 'package:sliver_appbar_flutter/search_bar_provider_data.dart';
 
 
@@ -12,42 +11,34 @@ class SearchBar extends StatelessWidget {
 
   final SearchCallback onQueryChanged;
 
-  final Function onEditingComplete;
+  final FocusNode focusNode;
 
-  final Function onSearchPressed;
-
-  SearchBar({@required this.isSearching, @required this.onQueryChanged, @required this.onSearchPressed, @required this.onEditingComplete});
+  SearchBar({this.isSearching, this.onQueryChanged , this.focusNode});
 
   @override
   Widget build(BuildContext context) {
-        ///This Alignment ensures TextField slides from right and not from center
-       return Align(
-          alignment: Alignment.topRight,
-          child: AnimateExpansion(
-            animate: isSearching,
-            axisAlignment: -1.0,
-            child: Container(
-              ///same height as AppBar
-              height: 80,
-                width: MediaQuery.of(context).size.width,
-                ///positioning seachBar in the center
-                // child: Center(child: Search())),
-                child: Search(onQueryChanged: onQueryChanged, onEditingComplete: onEditingComplete, onSearchPressed: onSearchPressed)),
-          ),
-        );
-
+    ///This Alignment ensures TextField slides from right and not from center
+    return Align(
+      alignment: Alignment.topRight,
+      child: AnimateExpansion(
+        animate: isSearching,
+        axisAlignment: -1.0,
+        child: Container(
+          // height: 60,
+            width: MediaQuery.of(context).size.width,
+            child: Search(onQueryChanged: onQueryChanged, focusNode: focusNode)),
+      ),
+    );
   }
 }
-//TODO: Work on Design of the SearchBar
+
 class Search extends StatefulWidget {
 
-  SearchCallback onQueryChanged;
+  final SearchCallback onQueryChanged;
 
-  final Function onEditingComplete;
+  final FocusNode focusNode;
 
-  final Function onSearchPressed;
-
-  Search({@required this.onQueryChanged, @required this.onEditingComplete, @required this.onSearchPressed});
+  Search({@required this.onQueryChanged, this.focusNode});
 
   @override
   _SearchState createState() => _SearchState();
@@ -57,11 +48,10 @@ class _SearchState extends State<Search>  {
 
   final TextEditingController _controller = TextEditingController();
 
-
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
+    widget.focusNode.dispose();
     _controller.dispose();
   }
 
@@ -70,27 +60,53 @@ class _SearchState extends State<Search>  {
 
     return TextField(
       controller: _controller,
-      autofocus: true,
+
+      focusNode: widget.focusNode,
+
+      //TODO: Solve focus issue
+      ///setting to false because onChanged it works when SearchBar is hidden
+      autofocus: false,
 
       onChanged: widget.onQueryChanged,
 
       onEditingComplete: () {
 
         _controller.clear();
+
         Provider.of<SearchBarData>(context, listen: false).toggleSelected();
+        ///unfocusing textField
+        // FocusScope.of(context).unfocus();
+        //primaryFocus.unfocus();
+        widget.focusNode.unfocus();
 
       },
 
       decoration:
       InputDecoration(
-         filled: true,
-         fillColor: Colors.white,
+        filled: true,
+        fillColor: Colors.white,
         hintText: "Search", hintStyle: TextStyle(color: Colors.black26),
         prefixIcon: IconButton(icon: Icon(Icons.arrow_back_ios, color: Colors.blue),
 
           onPressed: () {
-          Provider.of<SearchBarData>(context, listen: false).toggleSelected();
-        },
+
+            _controller.clear();
+
+            Provider.of<SearchBarData>(context, listen: false).toggleSelected();
+
+            print("FOCUS:${widget.focusNode}");
+
+           // FocusScope.of(context).unfocus();
+            widget.focusNode.unfocus();
+            //primaryFocus.unfocus();
+
+
+       //   FocusScope.of(context).unfocus();
+
+           // FocusManager.instance.primaryFocus.unfocus();
+          //  FocusManager.instance.rootScope.requestFocus();
+
+          },
 
         ),
 
@@ -98,12 +114,23 @@ class _SearchState extends State<Search>  {
 
           onPressed: () {
 
-          _controller.clear();
+            _controller.clear();
 
-          Provider.of<SearchBarData>(context, listen: false)
-              .toggleSelected();
+            Provider.of<SearchBarData>(context, listen: false)
+                .toggleSelected();
 
-         },
+          //  primaryFocus.unfocus();
+
+          //  FocusScope.of(context).unfocus();
+            print("FOCUS:${widget.focusNode}");
+
+            widget.focusNode.unfocus();
+
+          //  FocusScope.of(context).requestFocus(widget.focusNode);
+
+           // primaryFocus.unfocus();
+
+          },
 
         ),
 
@@ -138,7 +165,7 @@ class _AnimateExpansionState extends State<AnimateExpansion>
 
   AnimationController _animationController;
 
-///Animation object allows us to pick CurvedAnimation behaviour
+  ///Animation object allows us to pick CurvedAnimation behaviour
   Animation<double> _animation;
 
   void prepareAnimations() {
@@ -157,7 +184,7 @@ class _AnimateExpansionState extends State<AnimateExpansion>
       curve: Curves.ease,
       reverseCurve: Curves.ease,
 
-     //  curve: Curves.easeInCubic,
+      //  curve: Curves.easeInCubic,
       // reverseCurve: Curves.easeOutCubic,
     );
   }
@@ -188,7 +215,7 @@ class _AnimateExpansionState extends State<AnimateExpansion>
   @override
   Widget build(BuildContext context) {
     return SizeTransition(
-       // axis: Axis.vertical,
+      // axis: Axis.vertical,
         axis: Axis.horizontal,
         axisAlignment: -1.0,
         sizeFactor: _animation,

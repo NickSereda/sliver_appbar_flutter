@@ -2,25 +2,19 @@
 
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:sliver_appbar_flutter/post_model.dart';
 
-//TODO: Rename SearchBarData to SliverAppBarData
-//TODO: Change to Bloc pattern?
+
 
 class SearchBarData extends ChangeNotifier {
 
   double get appBarHeight {
 
-    //TODO: Replace hardcoded values with variables
-    /// in order to increase 150, one needs to increase Max extend: now is set to 150!!!)
-    ///
-   return isSelected == false ? 200 : 60;
+    /// in order to increase 200, one needs to increase Max extend also
+    return isSelected == false ? 200 : 97;
 
   }
 
-
   bool isSelected = false;
-
 
   void toggleSelected() {
 
@@ -28,7 +22,36 @@ class SearchBarData extends ChangeNotifier {
 
     notifyListeners();
 
-}
+  }
+
+  ///Text Field Focusing
+//common instance of focus node
+//   FocusNode focusNode = FocusNode();
+//
+//
+//   void requestFocus() {
+//
+//     focusNode.requestFocus(focusNode);
+//
+//    // notifyListeners();
+//
+//   }
+//
+//
+//   void disposeFocusNode() {
+//
+//     focusNode.dispose();
+//
+//     //notifyListeners();
+//
+//   }
+//
+//   void unfocusFocusNode() {
+//     focusNode.unfocus();
+//
+//     //notifyListeners();
+//
+//   }
 
 
 }
