@@ -3,6 +3,9 @@ import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
 import 'package:sliver_appbar_flutter/main.dart';
 import 'package:sliver_appbar_flutter/search_bar_provider_data.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'cubit/searchbar_cubit.dart';
+import 'cubit/searchbar_state.dart';
 
 
 class SearchBar extends StatelessWidget {
@@ -17,7 +20,7 @@ class SearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ///This Alignment ensures TextField slides from right and not from center
+    //This Alignment ensures TextField slides from right and not from center
     return Align(
       alignment: Alignment.topRight,
       child: AnimateExpansion(
@@ -25,6 +28,7 @@ class SearchBar extends StatelessWidget {
         axisAlignment: -1.0,
         child: Container(
           // height: 60,
+          height: kToolbarHeight,
             width: MediaQuery.of(context).size.width,
             child: Search(onQueryChanged: onQueryChanged, focusNode: focusNode)),
       ),
@@ -42,6 +46,7 @@ class Search extends StatefulWidget {
 
   @override
   _SearchState createState() => _SearchState();
+
 }
 
 class _SearchState extends State<Search>  {
@@ -57,93 +62,81 @@ class _SearchState extends State<Search>  {
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<SearchBarCubit, SearchBarState>(
+          builder: (context, state) {
+    // final bloc = SearchBarProvider.of(context);
 
-    return TextField(
-      controller: _controller,
+      // return StreamBuilder<bool>(
+      //   stream: bloc.selectedBool,
+      //   builder: (context, snapshot) {
 
-      focusNode: widget.focusNode,
+          // if (snapshot.data == null) {
+          //   bloc.changeSelected(false);
+          // }
 
-      //TODO: Solve focus issue
-      ///setting to false because onChanged it works when SearchBar is hidden
-      autofocus: false,
+          return TextField(
 
-      onChanged: widget.onQueryChanged,
+            controller: _controller,
 
-      onEditingComplete: () {
+            focusNode: widget.focusNode,
 
-        _controller.clear();
+            autofocus: false,
 
-        Provider.of<SearchBarData>(context, listen: false).toggleSelected();
-        ///unfocusing textField
-        // FocusScope.of(context).unfocus();
-        //primaryFocus.unfocus();
-        widget.focusNode.unfocus();
+            onChanged: widget.onQueryChanged,
 
-      },
+            onEditingComplete: () {
+              _controller.clear();
 
-      decoration:
-      InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
-        hintText: "Search", hintStyle: TextStyle(color: Colors.black26),
-        prefixIcon: IconButton(icon: Icon(Icons.arrow_back_ios, color: Colors.blue),
+              context.read<SearchBarCubit>().toggleSelected();
 
-          onPressed: () {
+              widget.focusNode.unfocus();
+            },
 
-            _controller.clear();
+            decoration:
+            InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              hintText: "Search",
+              hintStyle: TextStyle(color: Colors.black26),
+              prefixIcon: IconButton(
+                icon: Icon(Icons.arrow_back_ios, color: Colors.blue),
 
-            Provider.of<SearchBarData>(context, listen: false).toggleSelected();
+                onPressed: () {
+                  _controller.clear();
 
-            print("FOCUS:${widget.focusNode}");
+                  widget.focusNode.unfocus();
 
-           // FocusScope.of(context).unfocus();
-            widget.focusNode.unfocus();
-            //primaryFocus.unfocus();
+                  context.read<SearchBarCubit>().toggleSelected();
 
+                },
 
-       //   FocusScope.of(context).unfocus();
+              ),
 
-           // FocusManager.instance.primaryFocus.unfocus();
-          //  FocusManager.instance.rootScope.requestFocus();
+              suffixIcon: IconButton(icon: Icon(Icons.search, color: Colors.blue),
 
-          },
+                onPressed: () {
+                  _controller.clear();
 
-        ),
+                  context.read<SearchBarCubit>().toggleSelected();
 
-        suffixIcon: IconButton(icon: Icon(Icons.search, color: Colors.blue),
+                  widget.focusNode.unfocus();
 
-          onPressed: () {
+                },
 
-            _controller.clear();
+              ),
 
-            Provider.of<SearchBarData>(context, listen: false)
-                .toggleSelected();
+              border: OutlineInputBorder(
 
-          //  primaryFocus.unfocus();
+                borderSide: BorderSide.none,
 
-          //  FocusScope.of(context).unfocus();
-            print("FOCUS:${widget.focusNode}");
+              ),
+            ),
+          );
+        }
+      );
 
-            widget.focusNode.unfocus();
-
-          //  FocusScope.of(context).requestFocus(widget.focusNode);
-
-           // primaryFocus.unfocus();
-
-          },
-
-        ),
-
-        border: OutlineInputBorder(
-
-          borderSide: BorderSide.none,
-
-        ),
-      ),
-    );
   }
 }
-
 
 ///Animation
 class AnimateExpansion extends StatefulWidget {
