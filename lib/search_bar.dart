@@ -7,6 +7,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cubit/searchbar_cubit.dart';
 import 'cubit/searchbar_state.dart';
 
+class TEST extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
 
 class SearchBar extends StatelessWidget {
 
