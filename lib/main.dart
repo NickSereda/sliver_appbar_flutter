@@ -33,7 +33,7 @@ class SimpleBlocObserver extends BlocObserver {
 }
 
 void main() {
-  Bloc.observer = SimpleBlocObserver();
+ // Bloc.observer = SimpleBlocObserver();
   runApp(MyApp());
 }
 
@@ -42,8 +42,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: AppBarWithSearchBar(),
-     //  home: CustomScrollViewWithSliverAppBar(),
+     // home: AppBarWithSearchBar(),
+       home: CustomScrollViewWithSliverAppBar(),
     );
   }
 }
@@ -68,7 +68,7 @@ class _CustomScrollViewWithSliverAppBarState
               print(query);
             },
             elevation: 1,
-            bottomOpacity: 0.7,
+            //bottomOpacity: 0.7,
             automaticallyImplyLeading: false,
             excludeHeaderSemantics: true,
             // maxHeight: 300,
@@ -103,26 +103,22 @@ class SearchBarSliverHeader extends StatelessWidget {
   /// [ThemeData.appBarTheme] is used. If that is also null, then value is
   /// adapted to the current [TargetPlatform].
   final bool centerTitle;
-
   /// Whether the title should be wrapped with header [Semantics].
   ///
   /// Defaults to false.
   final bool excludeHeaderSemantics;
-
   /// Controls whether we should try to imply the leading widget if null.
   ///
   /// If true and [leading] is null, automatically try to deduce what the leading
   /// widget should be. If false and [leading] is null, leading space is given to [title].
   /// If leading widget is not null, this parameter has no effect.
   final bool automaticallyImplyLeading;
-
   /// The spacing around [title] content on the horizontal axis. This spacing is
   /// applied even if there is no [leading] content or [actions]. If you want
   /// [title] to take all the space available, set this value to 0.0.
   ///
   /// Defaults to [NavigationToolbar.kMiddleSpacing].
   final double titleSpacing;
-
   /// How opaque the toolbar part of the app bar is.
   ///
   /// A value of 1.0 is fully opaque, and a value of 0.0 is fully transparent.
@@ -131,7 +127,6 @@ class SearchBarSliverHeader extends StatelessWidget {
   /// used by [SearchBarSliverHeader] to animate the opacity of the toolbar when the app
   /// bar is scrolled.
   final double toolbarOpacity;
-
   /// How opaque the bottom part of the app bar is.
   ///
   /// A value of 1.0 is fully opaque, and a value of 0.0 is fully transparent.
@@ -140,12 +135,10 @@ class SearchBarSliverHeader extends StatelessWidget {
   /// used by [SearchBarSliverHeader] to animate the opacity of the toolbar when the app
   /// bar is scrolled.
   final double bottomOpacity;
-
   /// Defines the width of [leading] widget.
   ///
   /// By default, the value of `leadingWidth` is 56.0.
   final double leadingWidth;
-
   /// The z-coordinate at which to place this app bar relative to its parent.
   ///
   /// This controls the size of the shadow below the app bar.
@@ -156,7 +149,6 @@ class SearchBarSliverHeader extends StatelessWidget {
   /// [ThemeData.appBarTheme] is used. If that is also null, the default value
   /// is 4.
   final double elevation;
-
   /// The color to paint the shadow below the app bar.
   ///
   /// If this property is null, then [AppBarTheme.shadowColor] of
@@ -171,7 +163,6 @@ class SearchBarSliverHeader extends StatelessWidget {
   /// [ThemeData.appBarTheme] is used. If that is also null, then
   /// [ThemeData.primaryColor] is used.
   final Color backgroundColor;
-
   /// The brightness of the app bar's material. Typically this is set along
   /// with [backgroundColor], [iconTheme], [textTheme].
   ///
@@ -179,7 +170,6 @@ class SearchBarSliverHeader extends StatelessWidget {
   /// [ThemeData.appBarTheme] is used. If that is also null, then
   /// [ThemeData.primaryColorBrightness] is used.
   final Brightness brightness;
-
   /// The color, opacity, and size to use for app bar icons. Typically this
   /// is set along with [backgroundColor], [brightness], [textTheme].
   ///
@@ -187,7 +177,6 @@ class SearchBarSliverHeader extends StatelessWidget {
   /// [ThemeData.appBarTheme] is used. If that is also null, then
   /// [ThemeData.primaryIconTheme] is used.
   final IconThemeData iconTheme;
-
   /// The color, opacity, and size to use for the icons that appear in the app
   /// bar's [actions]. This should only be used when the [actions] should be
   /// themed differently than the icon that appears in the app bar's [leading]
@@ -197,7 +186,6 @@ class SearchBarSliverHeader extends StatelessWidget {
   /// [ThemeData.appBarTheme] is used. If that is also null, then this falls
   /// back to [iconTheme].
   final IconThemeData actionsIconTheme;
-
   /// The typographic styles to use for text in the app bar. Typically this is
   /// set along with [brightness] [backgroundColor], [iconTheme].
   ///
@@ -205,13 +193,11 @@ class SearchBarSliverHeader extends StatelessWidget {
   /// [ThemeData.appBarTheme] is used. If that is also null, then
   /// [ThemeData.primaryTextTheme] is used.
   final TextTheme textTheme;
-
   /// The material's shape as well its shadow.
   ///
   /// A shadow is only displayed if the [elevation] is greater than
   /// zero.
   final ShapeBorder shape;
-
   /// This widget appears across the bottom of the app bar.
   ///
   /// Typically a [TabBar]. Only widgets that implement [PreferredSizeWidget] can
@@ -221,12 +207,10 @@ class SearchBarSliverHeader extends StatelessWidget {
   ///
   ///  * [PreferredSize], which can be used to give an arbitrary widget a preferred size.
   final PreferredSizeWidget bottom;
-
   /// The [actions] become the trailing component of the [NavigationToolbar] built
   /// by this widget. The height of each action is constrained to be no bigger
   /// than the [toolbarHeight].
   final List<Widget> actions;
-
   /// The primary widget displayed in the app bar.
   ///
   /// Typically a [Text] widget that contains a description of the current
@@ -244,7 +228,6 @@ class SearchBarSliverHeader extends StatelessWidget {
   /// as the [title] exceeds [toolbarHeight], it will be centered and
   /// clipped (top and bottom), which may be undesirable.
   final Widget title;
-
   /// A widget to display before the [title].
   ///
   /// Typically the [leading] widget is an [Icon] or an [IconButton].
@@ -260,7 +243,6 @@ class SearchBarSliverHeader extends StatelessWidget {
   /// there's no [Drawer] and the parent [Navigator] can go back, the [AppBar]
   /// will use a [BackButton] that calls [Navigator.maybePop].
   final Widget leading;
-
   /// This widget is stacked behind the toolbar and the tab bar. Its height will
   /// be the same as the app bar's overall height.
   /// Typically a [FlexibleSpaceBar]. See [FlexibleSpaceBar] for details.
@@ -310,7 +292,7 @@ class SearchBarSliverHeader extends StatelessWidget {
         // To make the content of the SliverAppBar appear / disappear when you scroll
         floating: true,
         delegate: CustomSliverDelegate(
-          maxHeight: maxHeight,
+          maxHeight : maxHeight,
           automaticallyImplyLeading: automaticallyImplyLeading,
           centerTitle: centerTitle,
           excludeHeaderSemantics: excludeHeaderSemantics,
@@ -446,7 +428,7 @@ class CustomSliverDelegate extends SliverPersistentHeaderDelegate {
           Column(
             children: [
               // In Android phones top padding seems to be smaller and searchbar does not appear at bottom
-              Container(height: MediaQuery.of(context).padding.top - 1),
+              Container(height: MediaQuery.of(context).padding.top - 4),
               SearchBar(
                 focusNode: focusNode,
                 isSearching: Provider.of<SearchBarData>(context, listen: true)

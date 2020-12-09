@@ -7,27 +7,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cubit/searchbar_cubit.dart';
 import 'cubit/searchbar_state.dart';
 
-class TEST extends StatelessWidget {
+class TestTest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    // TODO: implement build
+    throw UnimplementedError();
   }
+
 }
 
-
 class SearchBar extends StatelessWidget {
-
   final bool isSearching;
 
   final SearchCallback onQueryChanged;
 
   final FocusNode focusNode;
 
-  SearchBar({this.isSearching, this.onQueryChanged , this.focusNode});
+  SearchBar({this.isSearching, this.onQueryChanged, this.focusNode});
 
   @override
   Widget build(BuildContext context) {
-    //This Alignment ensures TextField slides from right and not from center
+    // This Alignment ensures TextField slides from right and not from center
     return Align(
       alignment: Alignment.topRight,
       child: AnimateExpansion(
@@ -35,29 +35,26 @@ class SearchBar extends StatelessWidget {
         axisAlignment: -1.0,
         child: Container(
           // height: 60,
-          height: kToolbarHeight,
             width: MediaQuery.of(context).size.width,
-            child: Search(onQueryChanged: onQueryChanged, focusNode: focusNode)),
+            child: SearchTextField(
+                onQueryChanged: onQueryChanged, focusNode: focusNode)),
       ),
     );
   }
 }
 
-class Search extends StatefulWidget {
-
+class SearchTextField extends StatefulWidget {
   final SearchCallback onQueryChanged;
 
   final FocusNode focusNode;
 
-  Search({@required this.onQueryChanged, this.focusNode});
+  SearchTextField({@required this.onQueryChanged, this.focusNode});
 
   @override
-  _SearchState createState() => _SearchState();
-
+  _SearchTextFieldState createState() => _SearchTextFieldState();
 }
 
-class _SearchState extends State<Search>  {
-
+class _SearchTextFieldState extends State<SearchTextField> {
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -69,87 +66,57 @@ class _SearchState extends State<Search>  {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SearchBarCubit, SearchBarState>(
-          builder: (context, state) {
-    // final bloc = SearchBarProvider.of(context);
+    return TextField(
+      controller: _controller,
+      focusNode: widget.focusNode,
+      // Setting to false because onChanged it works when SearchBar is hidden
+      autofocus: false,
+      onChanged: widget.onQueryChanged,
+      onEditingComplete: () {
+        _controller.clear();
+        Provider.of<SearchBarData>(context, listen: false).toggleSelected();
+        // Unfocusing textField(SearchBar)
+        widget.focusNode.unfocus();
+      },
 
-      // return StreamBuilder<bool>(
-      //   stream: bloc.selectedBool,
-      //   builder: (context, snapshot) {
-
-          // if (snapshot.data == null) {
-          //   bloc.changeSelected(false);
-          // }
-
-          return TextField(
-
-            controller: _controller,
-
-            focusNode: widget.focusNode,
-
-            autofocus: false,
-
-            onChanged: widget.onQueryChanged,
-
-            onEditingComplete: () {
-              _controller.clear();
-
-              context.read<SearchBarCubit>().toggleSelected();
-
-              widget.focusNode.unfocus();
-            },
-
-            decoration:
-            InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              hintText: "Search",
-              hintStyle: TextStyle(color: Colors.black26),
-              prefixIcon: IconButton(
-                icon: Icon(Icons.arrow_back_ios, color: Colors.blue),
-
-                onPressed: () {
-                  _controller.clear();
-
-                  widget.focusNode.unfocus();
-
-                  context.read<SearchBarCubit>().toggleSelected();
-
-                },
-
-              ),
-
-              suffixIcon: IconButton(icon: Icon(Icons.search, color: Colors.blue),
-
-                onPressed: () {
-                  _controller.clear();
-
-                  context.read<SearchBarCubit>().toggleSelected();
-
-                  widget.focusNode.unfocus();
-
-                },
-
-              ),
-
-              border: OutlineInputBorder(
-
-                borderSide: BorderSide.none,
-
-              ),
-            ),
-          );
-        }
-      );
-
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Theme.of(context).colorScheme.background,
+        hintText: "Search",
+        hintStyle: TextStyle(
+            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7)),
+        prefixIcon: IconButton(
+          icon: Icon(Icons.arrow_back_ios,
+              color: Theme.of(context).colorScheme.primary),
+          onPressed: () {
+            _controller.clear();
+            Provider.of<SearchBarData>(context, listen: false).toggleSelected();
+            widget.focusNode.unfocus();
+          },
+        ),
+        suffixIcon: IconButton(
+          icon:
+          Icon(Icons.search, color: Theme.of(context).colorScheme.primary),
+          onPressed: () {
+            _controller.clear();
+            Provider.of<SearchBarData>(context, listen: false).toggleSelected();
+            widget.focusNode.unfocus();
+          },
+        ),
+        border: OutlineInputBorder(
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
   }
 }
 
-///Animation
+// Animation for the SearchBar
 class AnimateExpansion extends StatefulWidget {
   final Widget child;
   final bool animate;
   final double axisAlignment;
+
   AnimateExpansion({
     this.animate = false,
     this.axisAlignment,
@@ -162,10 +129,9 @@ class AnimateExpansion extends StatefulWidget {
 
 class _AnimateExpansionState extends State<AnimateExpansion>
     with SingleTickerProviderStateMixin {
-
   AnimationController _animationController;
 
-  ///Animation object allows us to pick CurvedAnimation behaviour
+  // Animation object allows us to pick CurvedAnimation behaviour
   Animation<double> _animation;
 
   void prepareAnimations() {
@@ -174,22 +140,15 @@ class _AnimateExpansionState extends State<AnimateExpansion>
       duration: Duration(milliseconds: 400),
     );
     _animation = CurvedAnimation(
-      ///parent is AnimationController
+      // Parent is AnimationController
       parent: _animationController,
-
-      ///Choose CurvedAnimation behaviour here
-      // curve: Curves.elasticOut,
-      // reverseCurve: Curves.elasticOut,
-
+      // Choose CurvedAnimation behaviour in curve and reverseCurve:
       curve: Curves.ease,
       reverseCurve: Curves.ease,
-
-      //  curve: Curves.easeInCubic,
-      // reverseCurve: Curves.easeOutCubic,
     );
   }
 
-  ///appear and hide when this method is called(in didUpdateWidget)
+  // SearchBar appear and hide when this method is called(in didUpdateWidget)
   void _toggle() {
     if (widget.animate) {
       _animationController.forward();
@@ -211,11 +170,10 @@ class _AnimateExpansionState extends State<AnimateExpansion>
     _toggle();
   }
 
-  ///Transition
+  // Transition
   @override
   Widget build(BuildContext context) {
     return SizeTransition(
-      // axis: Axis.vertical,
         axis: Axis.horizontal,
         axisAlignment: -1.0,
         sizeFactor: _animation,
@@ -228,4 +186,3 @@ class _AnimateExpansionState extends State<AnimateExpansion>
     super.dispose();
   }
 }
-
